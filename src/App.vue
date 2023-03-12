@@ -1,17 +1,35 @@
 <template>
 <div class="app">
   <h1>Страница с постами</h1> 
+<div class="app__buttons">
+ 
   <MyButtons
   class="createBtn"
-  @click="showDialog">Создать пост</MyButtons>
+  @click="showDialog">
+  Создать пост
+  </MyButtons>
+
+  <MySelect 
+  v-model="selectedSort"
+  :options="sortOptions"
+  ></MySelect>
+
+
+</div>
+
   <MyDialog v-model:show="dialogVisible" >
   <PostForm 
   @create="createPost"/>
-</MyDialog>
+  </MyDialog>
+
   <PostList 
+  v-if="!isPostLoading"
   :posts="posts"
-  @remove="removePost"
-  />
+  @remove="removePost"> 
+  </PostList>
+
+ <div v-else>Идёт загрузка...</div>
+
 </div> 
 
 </template>
@@ -20,6 +38,8 @@
 import PostList from "@/components/PostList"
 import PostForm from "./components/PostForm"
 import MyButtons from "./components/UI/MyButtons.vue"
+import axios from "axios"
+import MySelect from "./components/UI/MySelect.vue"
 
 export default {  
   name: 'AppPage',
@@ -27,19 +47,34 @@ export default {
   components:{
     PostList,
     PostForm,
-    MyButtons
+    MyButtons,
+    MySelect
 },
 
   data() {
     return {
-      posts: [
-        {id: 1, title: "JavaScript", body: "Описание поста"},
-        {id: 2, title: "JavaScript 1", body: "Описание поста 1"},
-        {id: 3, title: "JavaScript 2", body: "Описание поста 2"},
-      ],
+      posts: [],
       dialogVisible: false,
       modificatorValue: "",
+      isPostLoading: false,
+      selectedSort: "",
+      sortOptions: [
+        {value: "title", name: "По названию"},
+        {value: "body ", name: "По содержимому"},
+      ]
+
     } 
+  },
+  mounted(){
+    this.fetchPosts();
+  },
+
+  watch:{
+    selectedSort(newValue){
+      this.posts.sort((post1, post2)=>{
+        return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
+      })    
+    },
   },
 
   methods:{ 
@@ -52,7 +87,19 @@ export default {
     },
     showDialog(){
       this.dialogVisible = true
-
+    },
+    async fetchPosts(){
+      try{
+        this.isPostLoading = true;
+        setTimeout(async() => {
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+        this.posts = response.data
+        this.isPostLoading = false;
+        }, 1000)       
+        
+      } catch (e){
+        alert("Ошибка")
+      } 
     }
   }
 }
@@ -71,5 +118,9 @@ export default {
 }
 .createBtn{
   margin: 15px;
+}
+.app__buttons{
+  display: flex;
+  justify-content: space-between;
 }
 </style>
