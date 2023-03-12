@@ -1,4 +1,5 @@
-# robo-helper
+# Test project on Vue3 using Vuex.
+Simulation of the creation of posts by users
 
 ## Project setup
 ```
