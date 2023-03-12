@@ -3,17 +3,13 @@
         
         <h4>Создание поста</h4>
 
-        <input    
-        v-model="post.title"
-        class="input" 
-        type="text" 
-        placeholder="Название">
+        <MyInput    
+        v-model:value="post.title"    
+        placeholder="Название"/>
 
-        <input 
-        v-model="post.body"
-        class="input" 
-        type="text" 
-        placeholder="Описание">
+        <MyInput 
+        v-model:value="post.body"
+        placeholder="Описание"/>
 
         <button class="btn" @click="createPost">Создать</button>
 
@@ -38,8 +34,8 @@
         // this.posts.push(newPost),
         this.post = {
           title: '',
-          body: ""
-        }     
+          body: '',
+        }       
     },
     }
   }
@@ -50,13 +46,7 @@
     padding: 15px;
     display: flex;
     flex-direction: column;
-  }
-  .input {
-    width: 100%;
-    border: 2px solid teal;
-    padding: 10px 15px;
-    margin-top: 10px;
-    }
+  }  
   .btn {
     margin-top: 15px;
     align-self: self-end;

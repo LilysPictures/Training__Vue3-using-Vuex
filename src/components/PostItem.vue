@@ -6,8 +6,7 @@
         </div>
 
         <div class="post__btn">
-            <MyButtons>Удалить</MyButtons>
-
+            <MyButtons @click="$emit('remove', post)">Удалить</MyButtons>
         </div>
 
     </div>
@@ -24,7 +23,8 @@ import MyButtons from './UI/MyButtons.vue';
             required: true,
         }
     },
-    components: { MyButtons }
+    components: { MyButtons },
+  
 }
   </script>
   
