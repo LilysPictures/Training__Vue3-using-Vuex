@@ -1,8 +1,13 @@
 <template>
 <div class="app">
   <h1>Страница с постами</h1> 
-<div class="app__buttons">
- 
+  <MyInput 
+  v-model:value="searchPost"
+  placeholder="Поиск ..."
+  /> 
+
+<div class="app__buttons"> 
+
   <MyButtons
   class="createBtn"
   @click="showDialog">
@@ -18,17 +23,30 @@
 </div>
 
   <MyDialog v-model:show="dialogVisible" >
+
   <PostForm 
   @create="createPost"/>
+  
   </MyDialog>
 
   <PostList 
   v-if="!isPostLoading"
-  :posts="posts"
+  :posts="sortedAndSearchedPosts"
   @remove="removePost"> 
   </PostList>
 
  <div v-else>Идёт загрузка...</div>
+
+<div class="page__wrapper">
+
+  <div 
+   v-for="pageNumber in totalPage" 
+  :key="pageNumber" 
+  class="page" 
+  :class="{'cursor': page !== pageNumber, 'current-page': page === pageNumber,}"
+  @click="changePage(pageNumber)"   
+  > {{ pageNumber }} </div>
+</div>
 
 </div> 
 
@@ -61,21 +79,31 @@ export default {
       sortOptions: [
         {value: "title", name: "По названию"},
         {value: "body ", name: "По содержимому"},
-      ]
-
+      ],
+      page: 1,
+      limit: 10,
+      searchPost: "",
+      totalPage: 0,
     } 
   },
   mounted(){
     this.fetchPosts();
+  
   },
+  computed:{
+  sortedPost(){
+    return [...this.posts].sort((post1, post2) => post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))  
+  },
+  sortedAndSearchedPosts(){
+    return this.sortedPost.filter(post => post.title.toLowerCase().includes(this.searchPost.toLowerCase()))
+  },
+},
 
-  watch:{
-    selectedSort(newValue){
-      this.posts.sort((post1, post2)=>{
-        return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
-      })    
-    },
-  },
+watch: {
+  page(){
+    this.fetchPosts()
+  }
+},
 
   methods:{ 
     createPost(post){
@@ -88,19 +116,31 @@ export default {
     showDialog(){
       this.dialogVisible = true
     },
-    async fetchPosts(){
+    fetchPosts(){
       try{
         this.isPostLoading = true;
         setTimeout(async() => {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
-        this.posts = response.data
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+          params:{
+          _page: this.page,
+          _limit: this.limit
+        }       
+      });
+      console.log("response.headers['x-total-count']", Number(response.headers['x-total-count']));
+      console.log("this.limit", this.limit);
+        this.totalPage = Math.ceil(Number(response.headers['x-total-count'])/this.limit)
+        this.posts = response.data        
         this.isPostLoading = false;
-        }, 1000)       
-        
+        }, 500)
+
+         
       } catch (e){
         alert("Ошибка")
       } 
-    }
+    },
+    changePage(pageNumber){
+      this.page = pageNumber; 
+    },
   }
 }
 
@@ -122,5 +162,19 @@ export default {
 .app__buttons{
   display: flex;
   justify-content: space-between;
+}
+.page__wrapper{
+  display: flex;
+  margin: 15px;
+}
+.page{ 
+  border: 1px solid black;
+  padding: 10px;
+}
+.current-page{
+  border: 2px solid teal;
+}
+.cursor{
+  cursor: pointer;
 }
 </style>

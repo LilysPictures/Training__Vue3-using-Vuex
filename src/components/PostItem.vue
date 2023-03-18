@@ -1,6 +1,7 @@
 <template>
     <div class="post">
         <div>
+        <div> <strong> #: </strong> {{post.id}} </div>
         <div> <strong> Название: </strong> {{post.title}} </div>
         <div> <strong> Описание: </strong> {{post.body}}</div> 
         </div>
@@ -18,7 +19,7 @@ import MyButtons from './UI/MyButtons.vue';
   export default {
     name: "PostItem",
     props: {
-        post: {
+        post: { 
             type: Object,
             required: true,
         }

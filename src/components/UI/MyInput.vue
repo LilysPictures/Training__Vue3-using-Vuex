@@ -19,10 +19,9 @@
   <style scoped>
 
   .input {
-    width: 100%;
+    margin: 15px;
     border: 2px solid teal;
-    padding: 10px 15px;
-    margin-top: 10px;
+    padding: 10px; 
     }
   </style>
   

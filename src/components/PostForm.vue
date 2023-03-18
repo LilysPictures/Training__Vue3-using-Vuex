@@ -5,7 +5,8 @@
 
         <MyInput    
         v-model:value="post.title"    
-        placeholder="Название"/>
+        placeholder="Название">
+        </MyInput>
 
         <MyInput 
         v-model:value="post.body"
