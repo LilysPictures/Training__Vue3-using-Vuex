@@ -126,8 +126,6 @@ watch: {
           _limit: this.limit
         }       
       });
-      console.log("response.headers['x-total-count']", Number(response.headers['x-total-count']));
-      console.log("this.limit", this.limit);
         this.totalPage = Math.ceil(Number(response.headers['x-total-count'])/this.limit)
         this.posts = response.data        
         this.isPostLoading = false;
