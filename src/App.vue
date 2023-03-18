@@ -35,7 +35,7 @@
   @remove="removePost"> 
   </PostList>
 
- <div v-else>Идёт загрузка...</div>
+ <div v-else class="loading">Идёт загрузка...</div>
 
 <div class="page__wrapper">
 
@@ -81,7 +81,7 @@ export default {
         {value: "body ", name: "По содержимому"},
       ],
       page: 1,
-      limit: 10,
+      limit: 6,
       searchPost: "",
       totalPage: 0,
     } 
@@ -129,7 +129,7 @@ watch: {
         this.totalPage = Math.ceil(Number(response.headers['x-total-count'])/this.limit)
         this.posts = response.data        
         this.isPostLoading = false;
-        }, 500)
+        }, 800)
 
          
       } catch (e){
@@ -174,5 +174,9 @@ watch: {
 }
 .cursor{
   cursor: pointer;
+}
+.loading{
+  font-size: larger;
+  margin: 15px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div v-if="posts.length">
-    <h3>Список постов</h3>
+    <h1>Список постов</h1>
     <transition-group name="post-list">
     <PostItem 
     v-for="post in posts" 
@@ -60,6 +60,10 @@
   }
   .post-list-move {
     transition: transform 0.4s ease;
+  }
+  h1{    
+    margin: 15px;
+    color: teal;
   }
   </style>
   
